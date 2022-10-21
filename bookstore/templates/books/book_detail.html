@@ -1,0 +1,201 @@
+{% extends 'books/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Bookstore</h1>
+                    <p class="lead fw-normal text-white-50 mb-0"> </p>
+                </div>
+            </div>
+        </header>
+    <div style="height: 25px;"></div>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <img src="{{ book.image.url }}" class="img-fluid" alt="" width="300" height="200">
+            </div>
+            <div class="desc1-right col-md-6 pl-lg-3">
+            <div style="height: 25px;"></div>
+                <h2 class="editContent">
+                    {{ book.title }}
+                </h2>
+                <h5 class="editContent"></h5>
+                <ul>
+                <div style="height: 50px;"></div>
+                    <li style="list-style: none">
+                        <span><b>Автор: </b> {{ book.author }}</span>
+                    </li>
+                    <li style="list-style: none">
+                        <span><b>Год: </b> {{ book.year }}</span>
+                    </li>
+                    <li style="list-style: none">
+                        <span><b>Кол-во стр: </b> {{ book.pages }}</span>
+                    </li>
+                    <li style="list-style: none">
+                        <span><b>Жанр: </b>
+                        {% for genre in book.genres.all %}
+                            {{ genre.name }}
+                        {% endfor %} </span>
+                    </li>
+                    <div style="height: 25px;"></div>
+
+                    <form class="d-flex">
+                    <div class="text-end">
+                         <a><button type="button" class="btn btn-light">{{ book.price }} руб.</button></a>
+                        <a href="{% url 'cart_detail' %}"><button type="button"  class="btn btn-warning">
+                            <i class="text-black"></i>
+                            Добавить в корзину
+                        </button></a>
+                     </div>
+                    </form>
+
+                    <div style="height: 25px;"></div>
+                    <li style="list-style: none">
+                        <span><b>Краткое описание:</b>
+                            <div style="height: 15px;"></div>
+                            {{ book.description }}
+                        </span>
+                    </li>
+                <div style="height: 555px;"></div>
+{#                        <form action="{% url 'add_rating' %}" method="post" name="rating">#}
+{#                            <b>{% trans 'Рейтинг' %}:</b>#}
+{#                            {% csrf_token %}#}
+{#                            <input type="hidden" value="{{ movie.id }}" name="movie">#}
+{#                            <span class="rating">#}
+{#                                {% for k, v in star_form.fields.star.choices %}#}
+{#                                    <input id="rating{{ v }}" type="radio" name="star"#}
+{#                                           value="{{ k }}">#}
+{#                                    <label for="rating{{ v }}">{{ k }}</label>#}
+{#                                {% endfor %}#}
+{#                            </span>#}
+{#                            <span class="editContent">4.0</span>#}
+{#                        </form>#}
+{#                    </li>#}
+{#                </ul>#}
+
+{#                <div class="share-desc">#}
+{#                    <div class="share">#}
+{#                        <h4 class="editContent">#}
+{#                            Share:</h4>#}
+{#                        <ul class="w3layouts_social_list list-unstyled">#}
+{#                            <li>#}
+{#                                <a href="#" class="w3pvt_facebook editContent">#}
+{#                                    <span class="fa fa-facebook-f"></span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a href="#" class="w3pvt_twitter editContent">#}
+{#                                    <span class="fa fa-twitter"></span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a href="#" class="w3pvt_facebook editContent">#}
+{#                                    <span class="fa fa-vk"></span>#}
+{#                                </a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                    <div class="clearfix"></div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row sub-para-w3layouts mt-5">#}
+
+{#            <h3 class="shop-sing editContent">#}
+{#                {% trans 'О фильме'  %} {{ movie.title }}#}
+{#            </h3>#}
+{#            <p>#}
+{#                {% for image in movie.movieshots_set.all %}#}
+{#                    <img src="{{ image.image.url }}" class="img-movie-shots "#}
+{#                         alt="{{ image.description }}">#}
+{#                {% endfor %}#}
+{#            </p>#}
+{#            <p class="editContent">#}
+{#                {{ book.description|safe }}#}
+{#            </p>#}
+{#        </div>#}
+{#        <hr>#}
+        <div class="row">
+            <div class="single-form-left">
+                <!-- contact form grid -->
+                <div class="contact-single">
+                    <h3 class="editContent">
+                        <span class="sub-tittle editContent">{{ book.reviews_set.count }}</span>
+                        Оставить отзыв:
+                    </h3>
+                    <form action="{% url 'add_review' book.id %}" method="post" class="mt-4"
+                          id="formReview">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent" id="contactparent" value="">
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">Ваш комментарий</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+                        <div class="form-group editContent">
+                            <label for="contactcomment" class="editContent">
+                                Ваш комментарий *
+                            </label>
+                            {{ form.text }}
+                        </div>
+                        <div class="d-sm-flex">
+                            <div class="col-sm-6 form-group p-0 editContent">
+                                <label for="contactusername" class="editContent">
+                                    Имя *
+                                </label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-sm-6 form-group ml-sm-3 editContent">
+                                <label for="contactemail" class="editContent">
+                                    Email *
+                                </label>
+                                {{ form.email }}
+                            </div>
+                            {{ form.captcha }}
+                        </div>
+
+                        <button type="submit" class="btn btn-outline-primary">Опубликовать</button>
+                    </form>
+                </div>
+                <!--  //contact form grid ends here -->
+            </div>
+        </div>
+        {% for review in movie.get_review %}
+            <div class="media py-5">
+                <img src="{% static 'images/te2.jpg' %}" class="mr-3 img-fluid" alt="image">
+                <div class="media-body mt-4">
+                    <h5 class="mt-0 editContent">
+                        {{ review.name }}
+                    </h5>
+                    <p class="mt-2 editContent">
+                        {{ review.text }}
+                    </p>
+                    <a href="#formReview"
+                       onclick="addReview('{{ review.name }}', '{{ review.id }}')">Ответить</a>
+                    {% for rew in review.reviews_set.all %}
+                        <div class="media mt-5 editContent">
+                            <a class="pr-3" href="#">
+                                <img src="{% static 'images/te2.jpg' %}" class="img-fluid "
+                                     alt="image">
+                            </a>
+                            <div class="media-body">
+                                <h5 class="mt-0 editContent">{{ rew.name }}</h5>
+                                <p class="mt-2 editContent">{{ rew.text }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        function addReview(name, id) {
+            document.getElementById("contactparent").value = id;
+            document.getElementById("contactcomment").innerText = `${name}, `
+        }
+
+    </script>
+
+{% endblock %}

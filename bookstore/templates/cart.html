@@ -1,0 +1,161 @@
+{% extends 'books/base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Корзина покупок
+{% endblock %}
+
+{% block content %}
+  <h1>Корзина покупок</h1>
+  <table class="cart">
+    <thead>
+      <tr>
+        <th>Картинка</th>
+        <th>Товар</th>
+        <th>Обновить кол-во</th>
+        <th>Удалить</th>
+        <th>Кол-во</th>
+        <th>Цена за шт</th>
+        <th>Общая стоимость</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart %}
+        {% with book=item.book %}
+          <tr>
+            <td>
+              <a href="{{ book.get_absolute_url }}">
+                <img src="{% if book.image %}{{ book.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}">
+              </a>
+            </td>
+            <td>{{ book.title }}</td>
+            <td>
+              <form action="{% url 'cart:cart_add' book.id %}" method="post">
+                {{ item.update_quantity_form.quantity }}
+                {{ item.update_quantity_form.update }}
+                <input type="submit" value="Обновить">
+                {% csrf_token %}
+              </form>
+            </td>
+            <td><a href="{% url 'cart:cart_remove' book.id %}">Удалить</a></td>
+            <td>
+              {{ item.quantity }}
+            </td>
+            <td class="num">${{ item.price }}</td>
+            <td class="num">${{ item.total_price }}</td>
+          </tr>
+        {% endwith %}
+      {% endfor %}
+      <tr class="total">
+        <td>Итого</td>
+        <td colspan="4"></td>
+        <td class="num">${{ cart.get_total_price }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="text-right">
+    <a href="{% url 'home' %}" class="button light">В магазин</a>
+    <a href="#" class="button">Оформить заказ</a>
+  </p>
+
+
+{#{% block content %}#}
+{#<div class="card">#}
+{#    {% with total_items=cart|length %}#}
+{#        {% if cart|length > 0 %}#}
+{#            <div class="row">#}
+{#                <div class="col-md-8 cart">#}
+{#                    <div class="title">#}
+{#                        <div class="row">#}
+{#                            <div class="col"><h4><b>Корзина</b></h4></div>#}
+{#                            <div class="col align-self-center text-right text-muted">Поменять на подсчет товара</div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="row border-top border-bottom">#}
+{#                        <div class="row main align-items-center">#}
+{#                            <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/1GrakTl.jpg"></div>#}
+{#                            <div class="col">#}
+{#                                <div class="row text-muted">Shirt</div>#}
+{#                                <div class="row">Cotton T-shirt</div>#}
+{#                            </div>#}
+{#                            <div class="col">#}
+{#                                <a> </a><a href="{% url "cart_add" book.id %}">-</a><a href="{{ total_items }}" class="border">1</a><a href="item{{ total_items|pluralize }}">+</a>#}
+{#                            </div>#}
+{#                            <div class="col"> {{ cart.get_total_price }} руб.<span class="close">&#10005;</span></div></a>#}
+{#                        </div>#}
+{#                    </div>#}
+{##}
+{#                    <a href="{% url "cart_add" book.id %}">#}
+{#                {{ total_items }} item{{ total_items|pluralize }},#}
+{#                {{ cart.get_total_price }} руб.#}
+{##}
+{#                    <div class="row">#}
+{#                        <div class="row main align-items-center">#}
+{#                            <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>#}
+{#                            <div class="col">#}
+{#                                <div class="row text-muted">Shirt</div>#}
+{#                                <div class="row">Cotton T-shirt</div>#}
+{#                            </div>#}
+{#                            <div class="col">#}
+{#                                <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a>#}
+{#                            </div>#}
+{#                            <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="row border-top border-bottom">#}
+{#                        <div class="row main align-items-center">#}
+{#                            <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/pHQ3xT3.jpg"></div>#}
+{#                            <div class="col">#}
+{#                                <div class="row text-muted">Shirt</div>#}
+{#                                <div class="row">Cotton T-shirt</div>#}
+{#                            </div>#}
+{#                            <div class="col">#}
+{#                                <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a>#}
+{#                            </div>#}
+{#                            <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="back-to-shop"><a href="#">&leftarrow;</a><span class="text-muted">Back to shop</span></div>#}
+{#                </div>#}
+{#                <div class="col-md-4 summary">#}
+{#                    <div><h5><b>Итого: </b></h5></div>#}
+{#                    <hr>#}
+{#                    <div class="row">#}
+{#                        <div class="col" style="padding-left:0;">ITEMS 3</div>#}
+{#                        <div class="col text-right">&euro; 132.00</div>#}
+{#                    </div>#}
+{#                    <form>#}
+{#                        <p>SHIPPING</p>#}
+{#                        <select><option class="text-muted">Standard-Delivery- &euro;5.00</option></select>#}
+{#                        <p>GIVE CODE</p>#}
+{#                        <input id="code" placeholder="Enter your code">#}
+{#                    </form>#}
+{#                    <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">#}
+{#                        <div class="col">TOTAL PRICE</div>#}
+{#                        <div class="col text-right">&euro; 137.00</div>#}
+{#                    </div>#}
+{#                    <button class="btn">CHECKOUT</button>#}
+{#                </div>#}
+{#            </div>#}
+{#            {% else %}#}
+{#            <h4>Ваша корзина пуста.</h4>#}
+{#        {% endif %}#}
+{#    {% endwith %}#}
+{#</div>#}
+{##}
+{#<div class="cart">#}
+{#    {% with total_items=cart|length %}#}
+{#        {% if cart|length > 0 %}#}
+{#            Корзина:#}
+{#            <a href="{% url "cart_add" book.id %}">#}
+{#                {{ total_items }} item{{ total_items|pluralize }},#}
+{#                {{ cart.get_total_price }} руб.#}
+{#            </a>#}
+{#        {% else %}#}
+{#            <h4>Ваша корзина пуста.</h4>#}
+{#        {% endif %}#}
+{#    {% endwith %}#}
+{#</div>#}
+
+{% endblock %}
